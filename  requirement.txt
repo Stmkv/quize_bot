@@ -1,1 +1,4 @@
 pre-commit
+environs==11.0.0
+python-telegram-bot==13.2
+urllib3==1.26.15
