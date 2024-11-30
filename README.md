@@ -2,6 +2,12 @@
 
 В репозитории находятся два бота для игры в викторину.
 
+
+https://github.com/user-attachments/assets/246e91db-0542-44af-8583-f555764c180f
+
+https://github.com/user-attachments/assets/704cd70a-5000-46b1-8f70-ec1487dbd537
+
+
 Пример работы Telegram бота:
 
 ## Запуск
