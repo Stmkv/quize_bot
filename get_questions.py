@@ -16,18 +16,15 @@ def get_answer_and_questions(filename, code):
         question_pattern = r"(Вопрос\s\d+:.*?)(?=Ответ:)"
         answer_pattern = r"(Ответ:.*?)(?=\n\n|$)"
 
-        questions = re.findall(
-            question_pattern, questions_and_answers, re.DOTALL
-        )
+        questions = re.findall(question_pattern, questions_and_answers, re.DOTALL)
         answers = re.findall(answer_pattern, questions_and_answers, re.DOTALL)
 
         questions = [q.replace("\n", " ").strip() for q in questions]
         answers = [a.replace("\n", " ").strip() for a in answers]
-    return questions, answers
+        questions_and_answes = dict(zip(questions, answers))
+    return questions_and_answes
 
 
 if __name__ == "__main__":
     extract_zip("quiz-questions.zip", "quiz")
-    questions, answers = get_answer_and_questions("1vs1200.txt", "KOI8-R")
-    q = dict(zip(questions, answers))
-    print(q)
+    questions_and_answes = get_answer_and_questions("1vs1200.txt", "KOI8-R")
