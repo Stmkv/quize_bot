@@ -20,10 +20,48 @@ def new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard):
     )
 
 
-# def echo(event, vk_api):
-#     vk_api.messages.send(
-#         user_id=event.user_id, message=event.text, random_id=random.randint(1, 1000)
-#     )
+def get_answer(event, vk_api, redis_connect, answer_and_questions, keyboard):
+    vk_chat_id = event.user_id
+    question = redis_connect.get(vk_chat_id)
+    answer = answer_and_questions.get(question)
+    vk_api.messages.send(
+        user_id=event.user_id,
+        message=answer,
+        random_id=random.randint(1, 1000),
+        keyboard=keyboard.get_keyboard(),
+    )
+    new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard)
+
+
+def check_question(event, vk_api, redis_connect, answer_and_questions, keyboard):
+    user_answer = event.text
+    tg_chat_id = event.user_id
+
+    question = redis_connect.get(tg_chat_id)
+    answer = answer_and_questions.get(question)
+    answer = answer.split(":")
+    answer = answer[1].strip()
+
+    if "." in answer:
+        answer = answer.split(".")[0]
+    elif "(" in answer:
+        answer = answer.split("(")[0]
+
+    if answer.lower() == user_answer.lower():
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message="Все верно!",
+            random_id=random.randint(1, 1000),
+            keyboard=keyboard.get_keyboard(),
+        )
+        new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard)
+    else:
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message="Неверно! Попробуйте еще",
+            random_id=random.randint(1, 1000),
+            keyboard=keyboard.get_keyboard(),
+        )
 
 
 if __name__ == "__main__":
@@ -41,9 +79,6 @@ if __name__ == "__main__":
     )
 
     answer_and_questions = get_answer_and_questions("1vs1200.txt", "KOI8-R")
-    # dispatcher.bot_data["redis_connect"] = redis_connect
-    # dispatcher.bot_data["answer_and_questions"] = answer_and_questions
-
     vk_bot_token = env.str("VK_BOT_TOKEN")
     vk_session = vk.VkApi(token=vk_bot_token)
     vk_api = vk_session.get_api()
@@ -68,3 +103,7 @@ if __name__ == "__main__":
             )
         if event.text == "Новый вопрос":
             new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard)
+        elif event.text == "Сдаться":
+            get_answer(event, vk_api, redis_connect, answer_and_questions, keyboard)
+        else:
+            check_question(event, vk_api, redis_connect, answer_and_questions, keyboard)
