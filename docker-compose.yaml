@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  tg_bot:
+    build:
+      context: .
+    command: /app/start.sh tg_bot
+    restart: always
+
+  vk_bot:
+    build:
+      context: .
+    command: /app/start.sh vk_bot
+    restart: always
