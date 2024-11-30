@@ -38,7 +38,7 @@ def get_answer(update: Update, context: CallbackContext) -> None:
     question = db_connection.get(tg_chat_id)
     answer = context.bot_data["answer_and_questions"].get(question)
     context.bot.send_message(chat_id=tg_chat_id, text=answer)
-    new_questions(update, context)
+    return CHOOSINGS
 
 
 def check_question(update: Update, context: CallbackContext) -> None:
