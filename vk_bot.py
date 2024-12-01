@@ -10,7 +10,7 @@ from vk_api.keyboard import VkKeyboard
 from vk_api.longpoll import VkEventType, VkLongPoll
 
 
-def new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard):
+def get_new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard):
     vk_chat_id = event.user_id
     random_questions = random.choice(list(answer_and_questions.keys()))
     redis_connect.set(vk_chat_id, random_questions)
@@ -32,7 +32,7 @@ def get_answer(event, vk_api, redis_connect, answer_and_questions, keyboard):
         random_id=random.randint(1, 1000),
         keyboard=keyboard.get_keyboard(),
     )
-    new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard)
+    get_new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard)
 
 
 def check_question(event, vk_api, redis_connect, answer_and_questions, keyboard):
@@ -56,7 +56,7 @@ def check_question(event, vk_api, redis_connect, answer_and_questions, keyboard)
             random_id=random.randint(1, 1000),
             keyboard=keyboard.get_keyboard(),
         )
-        new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard)
+        get_new_questions(event, vk_api, redis_connect, answer_and_questions, keyboard)
     else:
         vk_api.messages.send(
             user_id=event.user_id,
@@ -111,7 +111,7 @@ if __name__ == "__main__":
                     message="Выберете действие",
                 )
             if event.text == "Новый вопрос":
-                new_questions(
+                get_new_questions(
                     event, vk_api, redis_connect, answer_and_questions, keyboard
                 )
             elif event.text == "Сдаться":
